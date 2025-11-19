@@ -4,20 +4,11 @@ from datetime import datetime, timedelta
 from .models import User
 
 
-# region SQL Create
-
-def create_user_if_not_exist(telegram_id: int, name: str, reflink: str = None) -> bool:
+def create_user_if_not_exist(username: str, first_name: str, last_name: str, telegram_id: int) -> bool:
     if not get_user_by_telegram_id_or_none(telegram_id):
-        User.create(name=name, telegram_id=telegram_id, referral_link=reflink)
-        increase_users_count(reflink=reflink)
+        User.create(username=username, first_name=first_name, last_name=last_name, telegram_id=telegram_id)
         return True
     return False
-
-
-# endregion
-
-
-# region SQL Select
 
 
 def get_users_total_count() -> int:
@@ -36,7 +27,7 @@ def get_user_ids() -> Generator:
 
 
 def get_all_users() -> tuple:
-    yield from ((user.telegram_id, user.name, user.referral_link, user.registration_timestamp, user.language_code) for
+    yield from ((user.username, user.first_name, user.last_name, user.telegram_id) for
                 user in User.select())
 
 
@@ -53,12 +44,6 @@ def get_locale(telegram_id: int) -> str | None:
 
 def get_user_1win_id(telegram_id: int) -> int:
     return User.get(User.telegram_id == telegram_id).onewin_id
-
-
-# endregion
-
-
-# region Update
 
 
 def check_onewin_id(onewin_id: int):
@@ -84,4 +69,3 @@ def check_user_deposit(telegram_id: int) -> int:
 def set_locale(telegram_id: int, language_code: str) -> None:
     User.update(language_code=language_code).where(User.telegram_id == telegram_id).execute()
 
-# endregion
