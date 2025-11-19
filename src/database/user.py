@@ -1,8 +1,7 @@
 from typing import Generator
 from datetime import datetime, timedelta
 
-from .models import User, WinId
-from .reflink import increase_users_count
+from .models import User
 
 
 # region SQL Create
@@ -60,10 +59,6 @@ def get_user_1win_id(telegram_id: int) -> int:
 
 
 # region Update
-
-
-def set_1win_id(onewin_id: int):
-    WinId.create(onewin_id=onewin_id)
 
 
 def check_onewin_id(onewin_id: int):
