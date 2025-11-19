@@ -1,6 +1,6 @@
 from datetime import datetime
-from peewee import Model, SqliteDatabase, BigIntegerField, IntegerField, DateTimeField, CharField, \
-    BooleanField, FloatField, ForeignKeyField
+from peewee import (Model, SqliteDatabase, BigIntegerField, IntegerField, DateTimeField, CharField,
+                    BooleanField, FloatField, ForeignKeyField)
 
 db = SqliteDatabase('database.db')
 
