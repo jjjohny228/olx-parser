@@ -1,7 +1,9 @@
+from peewee import IntegrityError
 from typing import Generator
 from datetime import datetime, timedelta
 
-from .models import User
+from src.database.models import User, Target, Advertisement
+from src.utils import logger
 
 
 def create_user_if_not_exist(username: str, first_name: str, last_name: str, telegram_id: int) -> bool:
@@ -9,6 +11,29 @@ def create_user_if_not_exist(username: str, first_name: str, last_name: str, tel
         User.create(username=username, first_name=first_name, last_name=last_name, telegram_id=telegram_id)
         return True
     return False
+
+
+def create_target(user_telegram_id: int, target_name: str, target_url: str, chat_id: str):
+    user = User.get(telegram_id=user_telegram_id)
+    Target.create(user=user, name=target_name, url=target_url, chat_id=chat_id)
+
+
+def get_user_targets(user_telegram_id: int) -> [Target]:
+    user = User.get_or_none(User.telegram_id == user_telegram_id)
+    if user is None:
+        return None
+    user_targets = Target.select().where(Target.user == user)
+    return user_targets
+
+def add_advertisement(ad_url: str, target_id: int):
+    try:
+        Advertisement.create(url=ad_url, target_id=target_id)
+        return True
+    except IntegrityError:
+        return False
+
+def get_all_targets() -> [Target]:
+    return Target.select().order_by(Target.id)
 
 
 def get_users_total_count() -> int:
@@ -68,4 +93,5 @@ def check_user_deposit(telegram_id: int) -> int:
 
 def set_locale(telegram_id: int, language_code: str) -> None:
     User.update(language_code=language_code).where(User.telegram_id == telegram_id).execute()
+
 

@@ -65,6 +65,15 @@ class Target(_BaseModel):
     active = BooleanField(default=True)
 
 
+class Advertisement(_BaseModel):
+    """
+    The models contain all advertisements that were found
+    """
+    target = ForeignKeyField(Target, backref='advertisements')
+    url = CharField(unique=True)
+
+
+
 def register_models() -> None:
     for model in _BaseModel.__subclasses__():
         model.create_table()

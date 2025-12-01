@@ -6,6 +6,8 @@ from src.filters import register_all_filters
 from src.database.models import register_models
 from src.create_bot import dp, bot
 from src.utils import logger
+from src.utils.scheduler import schedule_func
+from src.utils.parsers import Parser
 
 
 async def on_startup(_):
@@ -20,6 +22,9 @@ async def on_startup(_):
 
     # Registering database models
     register_models()
+
+    # Parse adds every 5 minutes
+    schedule_func(Parser().search_ads)
 
     logger.info('The bot is up and running!')
 

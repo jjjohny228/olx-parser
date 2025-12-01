@@ -1,2 +1,2 @@
 from .chat_actions import send_typing_action
-from .logging import logger, setup_logger
+from .olx_logger import logger, setup_logger

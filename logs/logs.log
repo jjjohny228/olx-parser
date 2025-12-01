@@ -1,10 +1,92 @@
-2025-11-19T19:33:09.845607+0200 INFO The bot is up and running!
-2025-11-19T19:35:47.808780+0200 INFO The bot is up and running!
-2025-11-19T19:36:19.910765+0200 INFO The bot is up and running!
-2025-11-19T19:37:39.814346+0200 INFO The bot is up and running!
-2025-11-19T19:39:30.888980+0200 INFO The bot is up and running!
-2025-11-19T19:41:24.340202+0200 INFO The bot is up and running!
-2025-11-19T19:41:55.533193+0200 INFO The bot is up and running!
-2025-11-19T19:42:09.663674+0200 INFO The bot is up and running!
-2025-11-19T19:42:49.225887+0200 INFO Рассылка закончилась, 1 юзеров получили сообщения.
-2025-11-19T19:45:26.167035+0200 INFO The bot is up and running!
+2025-12-01T16:21:41.196438+0200 ERROR func must be a callable or a textual reference to one
+2025-12-01T16:21:57.779158+0200 ERROR func must be a callable or a textual reference to one
+2025-12-01T16:23:12.479289+0200 INFO The bot is up and running!
+2025-12-01T16:27:08.184090+0200 INFO The bot is up and running!
+2025-12-01T16:27:48.528833+0200 INFO The bot is up and running!
+2025-12-01T16:48:27.772106+0200 INFO The bot is up and running!
+2025-12-01T16:48:30.628427+0200 ERROR User doesnt have any targets
+2025-12-01T16:48:32.076868+0200 ERROR User doesnt have any targets
+2025-12-01T16:51:18.150143+0200 INFO The bot is up and running!
+2025-12-01T16:52:52.204717+0200 INFO The bot is up and running!
+2025-12-01T16:53:42.533816+0200 INFO The bot is up and running!
+2025-12-01T16:55:03.931976+0200 INFO The bot is up and running!
+2025-12-01T16:55:35.504461+0200 INFO The bot is up and running!
+2025-12-01T16:56:20.099582+0200 ERROR Some error occurred: Chat not found
+2025-12-01T16:56:48.561781+0200 INFO The bot is up and running!
+2025-12-01T16:57:02.126894+0200 ERROR Some error occurred: Chat not found
+2025-12-01T17:00:17.960602+0200 INFO The bot is up and running!
+2025-12-01T17:00:45.073941+0200 INFO {"id": -1003472966802, "title": "Test olx parser", "type": "channel", "invite_link": "https://t.me/+gf-6cLtuTTBiMDZi", "can_send_gift": true, "has_visible_history": true, "can_send_paid_media": true, "accepted_gift_types": {"unlimited_gifts": true, "limited_gifts": true, "unique_gifts": true, "premium_subscription": false}, "available_reactions": [], "max_reaction_count": 11, "accent_color_id": 4}
+2025-12-01T17:02:54.137658+0200 INFO The bot is up and running!
+2025-12-01T17:03:20.680892+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/vropeyska-tesla-3-long-range-na-garant-ne-farbovana-z-nmechinni-IDZaq1T.html
+2025-12-01T17:03:39.305439+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/vropeyska-tesla-3-long-range-na-garant-ne-farbovana-z-nmechinni-IDZaq1T.html
+2025-12-01T17:04:00.155482+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/vropeyska-tesla-3-long-range-na-garant-ne-farbovana-z-nmechinni-IDZaq1T.html
+2025-12-01T17:04:20.172635+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/vropeyska-tesla-3-long-range-na-garant-ne-farbovana-z-nmechinni-IDZaq1T.html
+2025-12-01T17:04:38.997867+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/vropeyska-tesla-3-long-range-na-garant-ne-farbovana-z-nmechinni-IDZaq1T.html
+2025-12-01T17:05:00.120331+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/vropeyska-tesla-3-long-range-na-garant-ne-farbovana-z-nmechinni-IDZaq1T.html
+2025-12-01T17:05:11.421415+0200 INFO The bot is up and running!
+2025-12-01T17:07:37.669533+0200 INFO The bot is up and running!
+2025-12-01T17:08:04.272671+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/vropeyska-tesla-3-long-range-na-garant-ne-farbovana-z-nmechinni-IDZaq1T.html
+2025-12-01T17:08:17.199873+0200 INFO The bot is up and running!
+2025-12-01T17:08:42.979003+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/vropeyska-tesla-3-long-range-na-garant-ne-farbovana-z-nmechinni-IDZaq1T.html
+2025-12-01T17:08:55.178965+0200 INFO The bot is up and running!
+2025-12-01T17:09:21.182393+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/vropeyska-tesla-3-long-range-na-garant-ne-farbovana-z-nmechinni-IDZaq1T.html
+2025-12-01T17:09:39.766807+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/vropeyska-tesla-3-long-range-na-garant-ne-farbovana-z-nmechinni-IDZaq1T.html
+2025-12-01T17:10:00.641591+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/vropeyska-tesla-3-long-range-na-garant-ne-farbovana-z-nmechinni-IDZaq1T.html
+2025-12-01T17:10:20.799204+0200 INFO The bot is up and running!
+2025-12-01T17:10:46.453283+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/vropeyska-tesla-3-long-range-na-garant-ne-farbovana-z-nmechinni-IDZaq1T.html
+2025-12-01T17:10:46.454530+0200 ERROR Advertisement https://www.olx.ua/d/uk/obyavlenie/vropeyska-tesla-3-long-range-na-garant-ne-farbovana-z-nmechinni-IDZaq1T.html already exists
+2025-12-01T17:10:46.454706+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/prodam-tesla-model-y-IDZpGC9.html
+2025-12-01T17:10:46.456297+0200 INFO **Продам Tesla Model Y**
+Цена: 24 000 $
+Время публикации: 30 листопада 2025 р.
+Локация: Київ, Оболонський 
+2025-12-01T17:10:47.240924+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/tesla-3-tesla-3-long-range-dual-motor-IDZrtlS.html
+2025-12-01T17:10:47.243077+0200 INFO **Тесла 3 Tesla 3 Long Range Dual Motor**
+Цена: 15 999 $Договірна
+Время публикации: 13:19
+Локация: Хмельницький 
+2025-12-01T17:10:47.873617+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/2015-tesla-model-s-85d-IDZjvde.html
+2025-12-01T17:10:47.877065+0200 INFO **2015 Tesla Model S 85D**
+Цена: 5 000 $
+Время публикации: 30 листопада 2025 р.
+Локация: Львів, Галицький 
+2025-12-01T17:11:06.013902+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/vropeyska-tesla-3-long-range-na-garant-ne-farbovana-z-nmechinni-IDZaq1T.html
+2025-12-01T17:11:06.014577+0200 ERROR Advertisement https://www.olx.ua/d/uk/obyavlenie/vropeyska-tesla-3-long-range-na-garant-ne-farbovana-z-nmechinni-IDZaq1T.html already exists
+2025-12-01T17:11:06.014658+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/prodam-tesla-model-y-IDZpGC9.html
+2025-12-01T17:11:06.014826+0200 ERROR Advertisement https://www.olx.ua/d/uk/obyavlenie/prodam-tesla-model-y-IDZpGC9.html already exists
+2025-12-01T17:11:06.014882+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/tesla-3-tesla-3-long-range-dual-motor-IDZrtlS.html
+2025-12-01T17:11:06.015260+0200 ERROR Advertisement https://www.olx.ua/d/uk/obyavlenie/tesla-3-tesla-3-long-range-dual-motor-IDZrtlS.html already exists
+2025-12-01T17:11:06.015314+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/2015-tesla-model-s-85d-IDZjvde.html
+2025-12-01T17:11:06.015463+0200 ERROR Advertisement https://www.olx.ua/d/uk/obyavlenie/2015-tesla-model-s-85d-IDZjvde.html already exists
+2025-12-01T17:11:28.179645+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/vropeyska-tesla-3-long-range-na-garant-ne-farbovana-z-nmechinni-IDZaq1T.html
+2025-12-01T17:11:28.183805+0200 ERROR Advertisement https://www.olx.ua/d/uk/obyavlenie/vropeyska-tesla-3-long-range-na-garant-ne-farbovana-z-nmechinni-IDZaq1T.html already exists
+2025-12-01T17:11:28.183912+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/prodam-tesla-model-y-IDZpGC9.html
+2025-12-01T17:11:28.184080+0200 ERROR Advertisement https://www.olx.ua/d/uk/obyavlenie/prodam-tesla-model-y-IDZpGC9.html already exists
+2025-12-01T17:11:28.184134+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/tesla-3-tesla-3-long-range-dual-motor-IDZrtlS.html
+2025-12-01T17:11:28.185345+0200 ERROR Advertisement https://www.olx.ua/d/uk/obyavlenie/tesla-3-tesla-3-long-range-dual-motor-IDZrtlS.html already exists
+2025-12-01T17:11:28.185399+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/2015-tesla-model-s-85d-IDZjvde.html
+2025-12-01T17:11:28.185528+0200 ERROR Advertisement https://www.olx.ua/d/uk/obyavlenie/2015-tesla-model-s-85d-IDZjvde.html already exists
+2025-12-01T17:11:45.339915+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/vropeyska-tesla-3-long-range-na-garant-ne-farbovana-z-nmechinni-IDZaq1T.html
+2025-12-01T17:11:45.340516+0200 ERROR Advertisement https://www.olx.ua/d/uk/obyavlenie/vropeyska-tesla-3-long-range-na-garant-ne-farbovana-z-nmechinni-IDZaq1T.html already exists
+2025-12-01T17:11:45.340598+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/prodam-tesla-model-y-IDZpGC9.html
+2025-12-01T17:11:45.340765+0200 ERROR Advertisement https://www.olx.ua/d/uk/obyavlenie/prodam-tesla-model-y-IDZpGC9.html already exists
+2025-12-01T17:11:45.340822+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/tesla-3-tesla-3-long-range-dual-motor-IDZrtlS.html
+2025-12-01T17:11:45.340962+0200 ERROR Advertisement https://www.olx.ua/d/uk/obyavlenie/tesla-3-tesla-3-long-range-dual-motor-IDZrtlS.html already exists
+2025-12-01T17:11:45.346326+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/2015-tesla-model-s-85d-IDZjvde.html
+2025-12-01T17:11:45.346524+0200 ERROR Advertisement https://www.olx.ua/d/uk/obyavlenie/2015-tesla-model-s-85d-IDZjvde.html already exists
+2025-12-01T17:12:06.208635+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/vropeyska-tesla-3-long-range-na-garant-ne-farbovana-z-nmechinni-IDZaq1T.html
+2025-12-01T17:12:06.209546+0200 ERROR Advertisement https://www.olx.ua/d/uk/obyavlenie/vropeyska-tesla-3-long-range-na-garant-ne-farbovana-z-nmechinni-IDZaq1T.html already exists
+2025-12-01T17:12:06.209636+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/prodam-tesla-model-y-IDZpGC9.html
+2025-12-01T17:12:06.209819+0200 ERROR Advertisement https://www.olx.ua/d/uk/obyavlenie/prodam-tesla-model-y-IDZpGC9.html already exists
+2025-12-01T17:12:06.209886+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/tesla-3-tesla-3-long-range-dual-motor-IDZrtlS.html
+2025-12-01T17:12:06.210032+0200 ERROR Advertisement https://www.olx.ua/d/uk/obyavlenie/tesla-3-tesla-3-long-range-dual-motor-IDZrtlS.html already exists
+2025-12-01T17:12:06.211205+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/2015-tesla-model-s-85d-IDZjvde.html
+2025-12-01T17:12:06.211433+0200 ERROR Advertisement https://www.olx.ua/d/uk/obyavlenie/2015-tesla-model-s-85d-IDZjvde.html already exists
+2025-12-01T17:12:25.908357+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/vropeyska-tesla-3-long-range-na-garant-ne-farbovana-z-nmechinni-IDZaq1T.html
+2025-12-01T17:12:25.909039+0200 ERROR Advertisement https://www.olx.ua/d/uk/obyavlenie/vropeyska-tesla-3-long-range-na-garant-ne-farbovana-z-nmechinni-IDZaq1T.html already exists
+2025-12-01T17:12:25.909157+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/prodam-tesla-model-y-IDZpGC9.html
+2025-12-01T17:12:25.909304+0200 ERROR Advertisement https://www.olx.ua/d/uk/obyavlenie/prodam-tesla-model-y-IDZpGC9.html already exists
+2025-12-01T17:12:25.909353+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/tesla-3-tesla-3-long-range-dual-motor-IDZrtlS.html
+2025-12-01T17:12:25.912639+0200 ERROR Advertisement https://www.olx.ua/d/uk/obyavlenie/tesla-3-tesla-3-long-range-dual-motor-IDZrtlS.html already exists
+2025-12-01T17:12:25.913170+0200 INFO Found ad: https://www.olx.ua/d/uk/obyavlenie/2015-tesla-model-s-85d-IDZjvde.html
+2025-12-01T17:12:25.913412+0200 ERROR Advertisement https://www.olx.ua/d/uk/obyavlenie/2015-tesla-model-s-85d-IDZjvde.html already exists

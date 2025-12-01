@@ -13,8 +13,12 @@ class Messages:
         return '♻ Loading...'
 
     @staticmethod
+    def get_welcome() -> str:
+        return 'Добро пожаловать в бота. '
+
+    @staticmethod
     def get_menu_photo() -> str:
-        return 'https://telegra.ph/file/074593e0294e1ffcc538e.jpg'
+        return 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fcommons.wikimedia.org%2Fwiki%2FFile%3ATest-Logo.svg&psig=AOvVaw0lG3HvYAtKg_y2_IAqDwOr&ust=1763831042425000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCIDh4-jcg5EDFQAAAAAdAAAAABAE'
 
     @staticmethod
     def get_instruction_text() -> str:
@@ -38,3 +42,41 @@ class Messages:
     @staticmethod
     def get_throttled_error() -> str:
         return 'Пожалуйста, не так часто 🙏'
+
+    @staticmethod
+    def get_add_taget_name_text():
+        return 'Введите название таргета:'
+
+    @staticmethod
+    def get_add_taget_url_text():
+        return 'Введите url таргета  (ссылка должна быть со всеми нужными фильтрами):'
+
+    @staticmethod
+    def get_add_taget_chat_id_text():
+        return ('Введите id чата куда будут присылаться результаты (обязательное условие '
+                'чтобы бот был админом группы или же пользователь заранее нажал в боте старт):')
+
+    @staticmethod
+    def get_wrond_target_url():
+        return 'Url таргета должен быть ссылкой 🚫'
+
+    @staticmethod
+    def get_wrond_target_chat_id_text():
+        return 'Вы ввели непраивльный id чата куда будет отправляться результат. Попробуйте еще раз'
+
+    @staticmethod
+    def get_cancel_adding_target_text():
+        return 'Вы успешно отменили добавление таргета 🤝'
+
+    @staticmethod
+    def get_welcome_text():
+        return 'Добро пожаловать в бот по поиску обьявлений'
+
+    @staticmethod
+    def get_targets_menu_text():
+        return 'Меню таргетов'
+
+    @staticmethod
+    def get_target_success_text():
+        return 'Таргет был успешно добавлен'
+
