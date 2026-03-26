@@ -11,6 +11,7 @@ import pytz
 from src.create_bot import bot
 from src.database.user import get_all_targets, add_advertisement
 from src.handlers.user.kb import Keyboards
+from src.handlers.user.messages import Messages
 from src.utils import logger
 
 
@@ -23,13 +24,13 @@ class Parser:
                 # Save advertisement to the database and if it did not exist send message to user
                 successfully_added_advertisement = add_advertisement(ad['link'], target.id)
                 if successfully_added_advertisement:
-                    ad_text = f"**{ad['title']}**\nЦена: {ad['price']}\nВремя публикации: {ad['time']}\nЛокация: {ad['location']}"
+                    ad_text = Messages.get_advertisement_text(ad, target.user.language_code)
                     logger.info(ad_text)
                     await bot.send_photo(chat_id=target.chat_id,
                                          photo=ad['photo_url'],
                                          caption=ad_text,
-                                         parse_mode=ParseMode.MARKDOWN,
-                                         reply_markup=Keyboards.get_url_keyboard(ad['link']))
+                                         parse_mode=ParseMode.HTML,
+                                         reply_markup=Keyboards.get_url_keyboard(ad['link'], target.user.language_code))
 
 
 
@@ -63,7 +64,7 @@ class Parser:
                 ad_response = requests.get(link)
                 ad_soup = BeautifulSoup(ad_response.content, 'lxml')
 
-                photo_url = ad_soup.find('img', class_='css-1bmvjcs').get('src')
+                photo_url = ad_soup.find('img', class_='css-1n977oc').get('src')
                 ads.append({
                     'title': title,
                     'price': price,

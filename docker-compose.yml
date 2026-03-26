@@ -1,0 +1,13 @@
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: olx-parser-bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./database.db:/app/database.db
+      - ./logs:/app/logs
+    command: ["python", "main.py"]

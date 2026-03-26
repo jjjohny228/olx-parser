@@ -1,196 +1,371 @@
-import asyncio
-import re
-
-from aiogram import Bot
 from aiogram import Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import CommandStart
-from aiogram.types import CallbackQuery, Message, Chat
-from aiogram.utils import exceptions
-from aiogram.utils.exceptions import ChatNotFound, BotBlocked
+from aiogram.types import CallbackQuery, Message
 
-from src.database.user import create_user_if_not_exist, create_target, get_user_targets
-from src.utils import send_typing_action
-from .kb import Keyboards
-# from src.misc import UserDataInputting
-from .messages import Messages
-from src.filters.filter_func import check_is_admin
-from src.handlers.admin.admin import send_admin_menu
-# from .kb import Keyboards
-from config import Config
-from src.utils import logger
 from src.create_bot import bot
-from src.misc.user_states import UserTargetInputting
+from src.database.user import (
+    create_target,
+    create_user_if_not_exist,
+    get_locale,
+    get_user_target,
+    get_user_targets,
+    normalize_language_code,
+    set_locale,
+    update_target,
+)
+from src.handlers.user.kb import Keyboards
 from src.handlers.user.messages import Messages
+from src.misc.user_states import UserTargetInputting
+from src.utils import logger, send_typing_action
 
 
 class Utils:
     @staticmethod
-    async def is_valid_chat_id(chat_id: int) -> bool:
+    async def is_valid_chat_id(chat_id: int | str) -> bool:
         try:
-            chat = await bot.get_chat(chat_id)
-            logger.info(chat)
+            await bot.get_chat(chat_id)
             return True
-        except Exception as e:
-            logger.error(f'Some error occurred: {e}')
+        except Exception as error:
+            logger.error(f'Some error occurred: {error}')
             return False
+
+    @staticmethod
+    def get_user_language(user_id: int, telegram_language_code: str | None = None) -> str:
+        return get_locale(user_id) or normalize_language_code(telegram_language_code)
+
+    @staticmethod
+    def is_cancel_action(text: str) -> bool:
+        return text in Messages.get_button_variants('cancel_target')
+
+    @staticmethod
+    def parse_target_callback(callback_data: str, prefix: str) -> tuple[int, int]:
+        payload = callback_data.removeprefix(prefix)
+        target_id, page = payload.rsplit('_', 1)
+        return int(target_id), int(page)
+
+    @staticmethod
+    def parse_target_edit_callback(callback_data: str) -> tuple[int, str, int]:
+        payload = callback_data.removeprefix('target_edit_')
+        target_id, field_payload = payload.split('_', 1)
+        field_name, page = field_payload.rsplit('_', 1)
+        return int(target_id), field_name, int(page)
 
 
 class Handlers:
     @staticmethod
     async def __handle_add_target_button(message: Message, state: FSMContext):
-        await message.answer(Messages.get_add_taget_name_text(), reply_markup=Keyboards.get_cancel_target_markup())
+        language_code = Utils.get_user_language(message.from_user.id, message.from_user.language_code)
+        await message.answer(
+            Messages.get_text('add_target_name', language_code),
+            reply_markup=Keyboards.get_cancel_target_markup(language_code),
+        )
         await state.set_state(UserTargetInputting.target_name)
 
     @staticmethod
-    async def __handle_taget_name(message: Message, state: FSMContext):
+    async def __handle_target_name(message: Message, state: FSMContext):
+        language_code = Utils.get_user_language(message.from_user.id, message.from_user.language_code)
         await state.update_data(target_name=message.text)
-        await message.answer(Messages.get_add_taget_url_text())
+        await message.answer(Messages.get_text('add_target_url', language_code))
         await state.set_state(UserTargetInputting.target_url)
 
     @staticmethod
-    async def __handle_taget_url(message: Message, state: FSMContext):
+    async def __handle_target_url(message: Message, state: FSMContext):
+        language_code = Utils.get_user_language(message.from_user.id, message.from_user.language_code)
         if not message.text.startswith("https://"):
-            await message.answer(Messages.get_wrond_target_url())
-        else:
-            await state.update_data(target_url=message.text)
-            await message.answer(Messages.get_add_taget_chat_id_text())
-            await state.set_state(UserTargetInputting.target_chat_id)
+            await message.answer(Messages.get_text('wrong_target_url', language_code))
+            return
+
+        await state.update_data(target_url=message.text)
+        await message.answer(Messages.get_text('add_target_chat_id', language_code))
+        await state.set_state(UserTargetInputting.target_chat_id)
 
     @staticmethod
     async def __handle_chat_id(message: Message, state: FSMContext):
+        language_code = Utils.get_user_language(message.from_user.id, message.from_user.language_code)
         if not await Utils.is_valid_chat_id(message.text):
-            await message.answer(Messages.get_wrond_target_chat_id_text())
-        else:
-            await state.update_data(chat_id=message.text)
+            await message.answer(Messages.get_text('wrong_target_chat_id', language_code))
+            return
 
-            # Save target
-            data = await state.get_data()
-            target_name = data.get("target_name")
-            target_url = data.get("target_url")
-            chat_id = data.get("chat_id")
+        await state.update_data(chat_id=message.text)
+        data = await state.get_data()
 
-            create_target(message.from_user.id, target_name, target_url, chat_id)
-            await message.answer(Messages.get_target_success_text(), reply_markup=Keyboards.get_targets_menu())
-            await state.finish()
-
-    @staticmethod
-    async def __handle_cancel_adding_target(message: Message, state: FSMContext):
-        await message.answer(Messages.get_cancel_adding_target_text(), reply_markup=Keyboards.get_targets_menu())
+        create_target(
+            message.from_user.id,
+            data.get("target_name"),
+            data.get("target_url"),
+            data.get("chat_id"),
+        )
+        await message.answer(
+            Messages.get_text('target_created', language_code),
+            reply_markup=Keyboards.get_targets_menu(language_code),
+        )
         await state.finish()
 
     @staticmethod
-    async def __handle_main_menu(message: Message):
+    async def __handle_cancel_action(message: Message, state: FSMContext):
+        language_code = Utils.get_user_language(message.from_user.id, message.from_user.language_code)
+        await message.answer(
+            Messages.get_text('cancel_target', language_code),
+            reply_markup=Keyboards.get_targets_menu(language_code),
+        )
+        await state.finish()
+
+    @staticmethod
+    async def __handle_main_menu(message: Message, state: FSMContext):
+        await state.finish()
         await message.answer('🏠', reply_markup=Keyboards.get_main_menu_markup(message))
 
     @staticmethod
     async def __handle_my_targets(message: Message):
-        if get_user_targets(message.from_user.id):
-            await message.answer(text='Чтобы редактировать таргет нажмите на один из них',
-                                 reply_markup=Keyboards.get_my_targets_markup(message.from_user.id))
-        else:
-            await message.answer('У вас нет тергетов')
+        language_code = Utils.get_user_language(message.from_user.id, message.from_user.language_code)
+        user_targets = list(get_user_targets(message.from_user.id) or [])
+        if user_targets:
+            await message.answer(
+                text=Messages.get_text('choose_target_to_edit', language_code),
+                reply_markup=Keyboards.get_my_targets_markup(message.from_user.id),
+            )
+            return
+
+        await message.answer(Messages.get_text('no_targets', language_code))
 
     @staticmethod
     async def __handle_targets_menu_callback(callback: CallbackQuery):
+        language_code = Utils.get_user_language(callback.from_user.id, callback.from_user.language_code)
         await callback.answer()
         await callback.message.delete()
-        await callback.message.answer('Меню таргетов', reply_markup=Keyboards.get_targets_menu())
+        await callback.message.answer(
+            Messages.get_text('targets_menu_text', language_code),
+            reply_markup=Keyboards.get_targets_menu(language_code),
+        )
 
     @staticmethod
     async def __handle_start_command(message: Message, state: FSMContext) -> None:
         await state.finish()
-        if check_is_admin(message):
-            await send_admin_menu(message)
-        else:
-            await send_typing_action(message)
+        await send_typing_action(message)
 
-            create_user_if_not_exist(
-                username=message.from_user.username,
-                first_name=message.from_user.first_name,
-                last_name=message.from_user.first_name,
-                telegram_id=message.from_id,
-            )
+        create_user_if_not_exist(
+            username=message.from_user.username,
+            first_name=message.from_user.first_name,
+            last_name=message.from_user.last_name,
+            telegram_id=message.from_user.id,
+            language_code=message.from_user.language_code,
+        )
 
-            await message.answer(
-                text=Messages.get_welcome_text(),
-                reply_markup=Keyboards.get_main_menu_markup(message)
-            )
+        language_code = Utils.get_user_language(message.from_user.id, message.from_user.language_code)
+        await message.answer(
+            text=Messages.get_text('welcome_text', language_code),
+            reply_markup=Keyboards.get_main_menu_markup(message),
+        )
+
     @staticmethod
-    async def __handle_tagets_menu(message: Message):
-        await message.answer(text=Messages.get_targets_menu_text(),
-                             reply_markup=Keyboards.get_targets_menu())
+    async def __handle_targets_menu(message: Message):
+        language_code = Utils.get_user_language(message.from_user.id, message.from_user.language_code)
+        await message.answer(
+            text=Messages.get_text('targets_menu_text', language_code),
+            reply_markup=Keyboards.get_targets_menu(language_code),
+        )
 
     @staticmethod
     async def __change_target_page(callback_query: CallbackQuery):
         page = int(callback_query.data.split("_")[1])
         await callback_query.message.edit_reply_markup(
-            reply_markup=Keyboards.get_my_targets_markup(callback_query.from_user.id, page))
+            reply_markup=Keyboards.get_my_targets_markup(callback_query.from_user.id, page),
+        )
         await callback_query.answer()
 
+    @staticmethod
+    async def __handle_ignore_callback(callback_query: CallbackQuery):
+        await callback_query.answer()
+
+    @staticmethod
+    async def __handle_target_card(callback_query: CallbackQuery):
+        target_id, page = Utils.parse_target_callback(callback_query.data, 'target_')
+        target = get_user_target(callback_query.from_user.id, target_id)
+        language_code = Utils.get_user_language(callback_query.from_user.id, callback_query.from_user.language_code)
+        if target is None:
+            await callback_query.answer(Messages.get_text('target_not_found', language_code), show_alert=True)
+            return
+
+        await callback_query.message.edit_text(
+            Messages.get_target_details_text(target, language_code),
+            reply_markup=Keyboards.get_target_actions_markup(target.id, language_code, page, target.active),
+        )
+        await callback_query.answer()
+
+    @staticmethod
+    async def __handle_target_toggle(callback_query: CallbackQuery):
+        target_id, page = Utils.parse_target_callback(callback_query.data, 'target_toggle_')
+        target = get_user_target(callback_query.from_user.id, target_id)
+        language_code = Utils.get_user_language(callback_query.from_user.id, callback_query.from_user.language_code)
+        if target is None:
+            await callback_query.answer(Messages.get_text('target_not_found', language_code), show_alert=True)
+            return
+
+        new_active_value = not target.active
+        update_target(target.id, active=new_active_value)
+        target = get_user_target(callback_query.from_user.id, target_id)
+
+        await callback_query.message.edit_text(
+            Messages.get_target_details_text(target, language_code),
+            reply_markup=Keyboards.get_target_actions_markup(target.id, language_code, page, target.active),
+        )
+        callback_key = 'target_active_enabled' if new_active_value else 'target_active_disabled'
+        await callback_query.answer(Messages.get_text(callback_key, language_code))
+
+    @staticmethod
+    async def __handle_target_edit_start(callback_query: CallbackQuery, state: FSMContext):
+        target_id, field_name, page = Utils.parse_target_edit_callback(callback_query.data)
+        target = get_user_target(callback_query.from_user.id, target_id)
+        language_code = Utils.get_user_language(callback_query.from_user.id, callback_query.from_user.language_code)
+        if target is None:
+            await callback_query.answer(Messages.get_text('target_not_found', language_code), show_alert=True)
+            return
+
+        await state.update_data(
+            edit_target_id=target.id,
+            edit_target_field=field_name,
+            edit_target_page=page,
+        )
+        await state.set_state(UserTargetInputting.target_edit_value)
+
+        prompt_key = {
+            'name': 'edit_name_prompt',
+            'url': 'edit_url_prompt',
+            'chat_id': 'edit_chat_id_prompt',
+        }[field_name]
+        await callback_query.message.answer(
+            Messages.get_text(prompt_key, language_code),
+            reply_markup=Keyboards.get_cancel_target_markup(language_code),
+        )
+        await callback_query.answer()
+
+    @staticmethod
+    async def __handle_target_edit_value(message: Message, state: FSMContext):
+        language_code = Utils.get_user_language(message.from_user.id, message.from_user.language_code)
+        data = await state.get_data()
+        target = get_user_target(message.from_user.id, int(data['edit_target_id']))
+        if target is None:
+            await message.answer(Messages.get_text('target_not_found', language_code))
+            await state.finish()
+            return
+
+        field_name = data['edit_target_field']
+        new_value = message.text.strip()
+
+        if field_name == 'url' and not new_value.startswith('https://'):
+            await message.answer(Messages.get_text('wrong_target_url', language_code))
+            return
+
+        if field_name == 'chat_id' and not await Utils.is_valid_chat_id(new_value):
+            await message.answer(Messages.get_text('wrong_target_chat_id', language_code))
+            return
+
+        update_target(target.id, **{field_name: new_value})
+        updated_target = get_user_target(message.from_user.id, target.id)
+        await message.answer(
+            Messages.get_text('target_updated', language_code),
+            reply_markup=Keyboards.get_targets_menu(language_code),
+        )
+        await message.answer(
+            Messages.get_target_details_text(updated_target, language_code),
+            reply_markup=Keyboards.get_target_actions_markup(
+                updated_target.id,
+                language_code,
+                data['edit_target_page'],
+                updated_target.active,
+            ),
+        )
+        await state.finish()
+
+    @staticmethod
+    async def __handle_language_menu(message: Message):
+        language_code = Utils.get_user_language(message.from_user.id, message.from_user.language_code)
+        await message.answer(
+            Messages.get_text('language_prompt', language_code),
+            reply_markup=Keyboards.get_language_menu(),
+        )
+
+    @staticmethod
+    async def __handle_language_change(callback_query: CallbackQuery):
+        selected_language = callback_query.data.removeprefix('language_')
+        set_locale(callback_query.from_user.id, selected_language)
+        await callback_query.answer(Messages.get_text('language_updated', selected_language))
+        await callback_query.message.edit_text(Messages.get_text('language_updated', selected_language))
+        await callback_query.message.answer(
+            Messages.get_text('welcome_text', selected_language),
+            reply_markup=Keyboards.get_main_menu_markup(callback_query.message),
+        )
 
     @classmethod
     def register_user_handlers(cls, dp: Dispatcher) -> None:
-        dp.register_message_handler(cls.__handle_start_command, CommandStart(), state=None)
-        dp.register_message_handler(cls.__handle_cancel_adding_target, state='*', text='Отменить добавление таргета')
-        dp.register_message_handler(cls.__handle_add_target_button, text='Добавить таргет ➕', state=None)
-        dp.register_message_handler(cls.__handle_taget_name, state=UserTargetInputting.target_name)
-        dp.register_message_handler(cls.__handle_taget_url, state=UserTargetInputting.target_url)
+        dp.register_message_handler(cls.__handle_start_command, CommandStart(), state='*')
+        dp.register_message_handler(
+            cls.__handle_cancel_action,
+            lambda message: Utils.is_cancel_action(message.text),
+            state='*',
+        )
+        dp.register_message_handler(
+            cls.__handle_add_target_button,
+            lambda message: message.text in Messages.get_button_variants('add_target'),
+            state=None,
+        )
+        dp.register_message_handler(cls.__handle_target_name, state=UserTargetInputting.target_name)
+        dp.register_message_handler(cls.__handle_target_url, state=UserTargetInputting.target_url)
         dp.register_message_handler(cls.__handle_chat_id, state=UserTargetInputting.target_chat_id)
-        dp.register_message_handler(cls.__handle_tagets_menu, text='Таргеты 🚀')
-        dp.register_message_handler(cls.__handle_main_menu, text='Назад в главное меню  ⬅️')
-        dp.register_callback_query_handler(cls.__change_target_page, lambda c: c.data.startswith("page_") and c.data.endswith("target"))
-        dp.register_callback_query_handler(cls.__handle_targets_menu_callback,
-                                           lambda c: c.data == 'my_targets_menu')
-        dp.register_message_handler(cls.__handle_my_targets, text='Мои таргеты')
-        # dp.register_callback_query_handler(__handle_next_signal_callback, text='mines_next_signal')
-        # dp.register_callback_query_handler(__handle_menu_callback, text='mines_menu')
-        # dp.register_callback_query_handler(__handle_instruction_callback, text='mines_instruction_menu')
+        dp.register_message_handler(cls.__handle_target_edit_value, state=UserTargetInputting.target_edit_value)
+        dp.register_message_handler(
+            cls.__handle_targets_menu,
+            lambda message: message.text in Messages.get_button_variants('targets_menu'),
+            state=None,
+        )
+        dp.register_message_handler(
+            cls.__handle_language_menu,
+            lambda message: message.text in Messages.get_button_variants('language_menu'),
+            state=None,
+        )
+        dp.register_message_handler(
+            cls.__handle_main_menu,
+            lambda message: message.text in Messages.get_button_variants('main_menu'),
+            state='*',
+        )
+        dp.register_callback_query_handler(
+            cls.__handle_target_edit_start,
+            lambda callback: callback.data.startswith('target_edit_'),
+            state='*',
+        )
+        dp.register_callback_query_handler(
+            cls.__handle_target_toggle,
+            lambda callback: callback.data.startswith('target_toggle_'),
+            state='*',
+        )
+        dp.register_callback_query_handler(
+            cls.__change_target_page,
+            lambda callback: callback.data.startswith("page_") and callback.data.endswith("target"),
+        )
+        dp.register_callback_query_handler(
+            cls.__handle_ignore_callback,
+            lambda callback: callback.data == 'none',
+        )
+        dp.register_callback_query_handler(
+            cls.__handle_target_card,
+            lambda callback: callback.data.startswith('target_') and callback.data.count('_') == 2,
+        )
+        dp.register_callback_query_handler(
+            cls.__handle_targets_menu_callback,
+            lambda callback: callback.data == 'my_targets_menu',
+        )
+        dp.register_callback_query_handler(
+            cls.__handle_language_change,
+            lambda callback: callback.data.startswith('language_'),
+            state='*',
+        )
+        dp.register_message_handler(
+            cls.__handle_my_targets,
+            lambda message: message.text in Messages.get_button_variants('my_targets'),
+            state=None,
+        )
 
 
 def register_user_handlers(dp: Dispatcher):
     Handlers.register_user_handlers(dp)
-# async def __handle_next_signal_callback(callback: CallbackQuery):
-#     # Удаляем сообщение
-#     menu_owner = callback.data.split('_')[0]
-#     await callback.answer(text=MinesMessages.get_loading())
-#     await callback.message.delete()
-#     msg = await callback.message.answer('⌛️ Waiting...')
-#     delay_seconds = random.uniform(2, 3)
-#
-#     await asyncio.sleep(delay_seconds)
-#     await msg.delete()
-#
-#     if get_user_1win_id(callback.message.chat.id):
-#         new_photo = MinesMessages.get_random_signal()
-#
-#         await callback.message.answer_photo(photo=new_photo,
-#                                             caption=MinesMessages.get_signal_text(),
-#                                             reply_markup=MinesKeyboards.get_signal_markup())
-#     else:
-#         await callback.message.answer_photo(
-#             caption=CommonMessages.get_registration_text(callback.message.chat.first_name),
-#             photo=CommonMessages.get_registration_explanation_photo(),
-#             reply_markup=CommonKeyboards.get_registration_menu(menu_owner)
-#         )
-#     await callback.answer()
-#
-#
-# async def __handle_menu_callback(callback: CallbackQuery):
-#     await callback.message.delete()
-#     await callback.message.answer_photo(photo=MinesMessages.get_menu_photo(),
-#                                         caption=MinesMessages.get_menu_text(),
-#                                         reply_markup=MinesKeyboards.get_menu_markup())
-#     await callback.answer()
-#
-#
-# async def __handle_instruction_callback(callback: CallbackQuery):
-#     menu_owner = callback.data.split('_')[0]
-#     await callback.message.delete()
-#
-#     await callback.message.answer_video(
-#         video=MinesMessages.get_instruction_video(),
-#         caption=MinesMessages.get_instruction_text(),
-#         reply_markup=CommonKeyboards.get_instruction_menu(menu_owner)
-#     )
-

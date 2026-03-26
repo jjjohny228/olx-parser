@@ -5,4 +5,4 @@ class UserTargetInputting(StatesGroup):
     target_name = State()
     target_url = State()
     target_chat_id = State()
-
+    target_edit_value = State()

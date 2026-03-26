@@ -3,4 +3,4 @@
 __pycache__
 database.db
 venv
-logs
+logs/

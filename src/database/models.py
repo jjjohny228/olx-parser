@@ -1,6 +1,5 @@
 from datetime import datetime
-from peewee import (Model, SqliteDatabase, BigIntegerField, IntegerField, DateTimeField, CharField,
-                    BooleanField, FloatField, ForeignKeyField)
+from peewee import Model, SqliteDatabase, BigIntegerField, DateTimeField, CharField, BooleanField, ForeignKeyField
 
 db = SqliteDatabase('database.db')
 
@@ -23,31 +22,7 @@ class User(_BaseModel):
     telegram_id = BigIntegerField(unique=True, null=False)
     registration_timestamp = DateTimeField(default=datetime.now())
     admin = BooleanField(default=False)
-
-
-class Plan(_BaseModel):
-    """
-    The model contains available plans
-    """
-    class Meta:
-        db_table = 'plans'
-
-    name = CharField()
-    price = FloatField()
-    max_targets = IntegerField()
-
-
-class Subscription(_BaseModel):
-    """
-    The model contains users subscriptions.
-    """
-    class Meta:
-        db_table = 'subscriptions'
-
-    user = ForeignKeyField(User, backref='subscriptions')
-    plan = ForeignKeyField(Plan, backref='subscriptions')
-    started_at = DateTimeField(default=datetime.now())
-    trial_end_at = DateTimeField()
+    language_code = CharField(default='ru')
 
 
 class Target(_BaseModel):
@@ -75,5 +50,10 @@ class Advertisement(_BaseModel):
 
 
 def register_models() -> None:
+    db.connect(reuse_if_open=True)
     for model in _BaseModel.__subclasses__():
-        model.create_table()
+        model.create_table(safe=True)
+
+    user_columns = {column.name for column in db.get_columns(User._meta.table_name)}
+    if 'language_code' not in user_columns:
+        db.execute_sql("ALTER TABLE users ADD COLUMN language_code VARCHAR(8) DEFAULT 'ru'")
